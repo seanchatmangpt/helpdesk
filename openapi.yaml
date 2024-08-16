@@ -1,0 +1,811 @@
+---
+components:
+  responses:
+    errors:
+      content:
+        application/vnd.api+json:
+          schema:
+            $ref: '#/components/schemas/errors'
+      description: General Error
+  schemas:
+    error:
+      additionalProperties: false
+      properties:
+        code:
+          description: An application-specific error code, expressed as a string value.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        id:
+          description: A unique identifier for this particular occurrence of the problem.
+          type: string
+        links:
+          $ref: '#/components/schemas/links'
+        source:
+          properties:
+            parameter:
+              description: A string indicating which query parameter caused the error.
+              type: string
+            pointer:
+              description: A JSON Pointer [RFC6901] to the associated entity in the request document [e.g. "/data" for a primary data object, or "/data/attributes/title" for a specific attribute].
+              type: string
+          type: object
+        status:
+          description: The HTTP status code applicable to this problem, expressed as a string value.
+          type: string
+        title:
+          description: A short, human-readable summary of the problem. It SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization.
+          type: string
+      type: object
+    errors:
+      items:
+        $ref: '#/components/schemas/error'
+      type: array
+      uniqueItems: true
+    link:
+      description: "A link MUST be represented as either: a string containing the link's URL or a link object."
+      type: string
+    links:
+      additionalProperties:
+        $ref: '#/components/schemas/link'
+      type: object
+    representative:
+      additionalProperties: false
+      description: A "Resource object" representing a representative
+      properties:
+        attributes:
+          additionalProperties: false
+          description: An attributes object for a representative
+          properties:
+            name:
+              description: Field included by default.
+              type: string
+          required:
+            - name
+          type: object
+        id:
+          type: string
+        relationships:
+          additionalProperties: false
+          description: A relationships object for a representative
+          properties:
+            tickets:
+              properties:
+                data:
+                  description: An array of inputs for tickets
+                  items:
+                    description: Resource identifiers for tickets
+                    properties:
+                      id:
+                        type: string
+                      meta:
+                        additionalProperties: true
+                        type: object
+                      type:
+                        type: string
+                    required:
+                      - type
+                      - id
+                    type: object
+                  type: array
+                  uniqueItems: true
+          type: object
+        type:
+          type: string
+      required:
+        - type
+        - id
+      type: object
+    representative-filter:
+      additionalProperties: false
+      description: Filters the query to results matching the given filter object
+      example: ''
+      properties:
+        and:
+          $ref: '#/components/schemas/representative-filter'
+        id:
+          $ref: '#/components/schemas/representative-filter-id'
+        name:
+          $ref: '#/components/schemas/representative-filter-name'
+        not:
+          $ref: '#/components/schemas/representative-filter'
+        or:
+          $ref: '#/components/schemas/representative-filter'
+        tickets:
+          $ref: '#/components/schemas/ticket-filter'
+      type: object
+    representative-filter-id:
+      additionalProperties: false
+      properties:
+        eq:
+          format: uuid
+          type: string
+        greater_than:
+          format: uuid
+          type: string
+        greater_than_or_equal:
+          format: uuid
+          type: string
+        in:
+          items:
+            format: uuid
+            type: string
+          type: array
+        is_nil:
+          type: boolean
+        less_than:
+          format: uuid
+          type: string
+        less_than_or_equal:
+          format: uuid
+          type: string
+        not_eq:
+          format: uuid
+          type: string
+      type: object
+    representative-filter-name:
+      additionalProperties: false
+      properties:
+        eq:
+          type: string
+        greater_than:
+          type: string
+        greater_than_or_equal:
+          type: string
+        in:
+          items:
+            type: string
+          type: array
+        is_nil:
+          type: boolean
+        less_than:
+          type: string
+        less_than_or_equal:
+          type: string
+        not_eq:
+          type: string
+      type: object
+    ticket:
+      additionalProperties: false
+      description: A "Resource object" representing a ticket
+      properties:
+        attributes:
+          additionalProperties: false
+          description: An attributes object for a ticket
+          properties:
+            representative_id:
+              description: Field included by default.
+              format: uuid
+              nullable: true
+              type: string
+            subject:
+              description: Field included by default.
+              type: string
+          required:
+            - subject
+          type: object
+        id:
+          type: string
+        relationships:
+          additionalProperties: false
+          description: A relationships object for a ticket
+          properties:
+            representative:
+              properties:
+                data:
+                  description: An array of inputs for representative
+                  items:
+                    description: Resource identifiers for representative
+                    properties:
+                      id:
+                        type: string
+                      meta:
+                        additionalProperties: true
+                        type: object
+                      type:
+                        type: string
+                    required:
+                      - type
+                      - id
+                    type: object
+                  type: array
+                  uniqueItems: true
+          type: object
+        type:
+          type: string
+      required:
+        - type
+        - id
+      type: object
+    ticket-filter:
+      additionalProperties: false
+      description: Filters the query to results matching the given filter object
+      example: ''
+      properties:
+        and:
+          $ref: '#/components/schemas/ticket-filter'
+        id:
+          $ref: '#/components/schemas/ticket-filter-id'
+        not:
+          $ref: '#/components/schemas/ticket-filter'
+        or:
+          $ref: '#/components/schemas/ticket-filter'
+        representative:
+          $ref: '#/components/schemas/representative-filter'
+        representative_id:
+          $ref: '#/components/schemas/ticket-filter-representative_id'
+        subject:
+          $ref: '#/components/schemas/ticket-filter-subject'
+      type: object
+    ticket-filter-id:
+      additionalProperties: false
+      properties:
+        eq:
+          format: uuid
+          type: string
+        greater_than:
+          format: uuid
+          type: string
+        greater_than_or_equal:
+          format: uuid
+          type: string
+        in:
+          items:
+            format: uuid
+            type: string
+          type: array
+        is_nil:
+          type: boolean
+        less_than:
+          format: uuid
+          type: string
+        less_than_or_equal:
+          format: uuid
+          type: string
+        not_eq:
+          format: uuid
+          type: string
+      type: object
+    ticket-filter-representative_id:
+      additionalProperties: false
+      properties:
+        eq:
+          format: uuid
+          type: string
+        greater_than:
+          format: uuid
+          type: string
+        greater_than_or_equal:
+          format: uuid
+          type: string
+        in:
+          items:
+            format: uuid
+            type: string
+          type: array
+        is_nil:
+          type: boolean
+        less_than:
+          format: uuid
+          type: string
+        less_than_or_equal:
+          format: uuid
+          type: string
+        not_eq:
+          format: uuid
+          type: string
+      type: object
+    ticket-filter-subject:
+      additionalProperties: false
+      properties:
+        eq:
+          type: string
+        greater_than:
+          type: string
+        greater_than_or_equal:
+          type: string
+        in:
+          items:
+            type: string
+          type: array
+        is_nil:
+          type: boolean
+        less_than:
+          type: string
+        less_than_or_equal:
+          type: string
+        not_eq:
+          type: string
+      type: object
+  securitySchemes:
+    api_key:
+      description: API Key provided in the Authorization header
+      in: header
+      name: api_key
+      type: apiKey
+info:
+  title: Open API Specification
+  version: '1.1'
+openapi: 3.0.0
+paths:
+  /representatives:
+    get:
+      callbacks: {}
+      deprecated: false
+      description: //representatives operation on representative resource
+      parameters:
+        - description: Filters the query to results with attributes matching the given filter object
+          in: query
+          name: filter
+          required: false
+          schema:
+            $ref: '#/components/schemas/representative-filter'
+          style: deepObject
+        - description: Sort order to apply to the results
+          explode: false
+          in: query
+          name: sort
+          required: false
+          schema:
+            pattern: ^(id|-id|\+\+id|--id|name|-name|\+\+name|--name)(,(id|-id|\+\+id|--id|name|-name|\+\+name|--name))*$
+            type: string
+          style: form
+        - description: Paginates the response with the limit and offset or keyset pagination.
+          in: query
+          name: page
+          required: false
+          schema:
+            anyOf:
+              - properties:
+                  after:
+                    type: string
+                  before:
+                    type: string
+                  count:
+                    default: false
+                    type: boolean
+                  limit:
+                    minimum: 1
+                    type: integer
+                type: object
+              - properties:
+                  count:
+                    default: false
+                    type: boolean
+                  limit:
+                    minimum: 1
+                    type: integer
+                  offset:
+                    minimum: 0
+                    type: integer
+                type: object
+          style: deepObject
+        - description: Relationship paths to include in the response
+          explode: false
+          in: query
+          name: include
+          required: false
+          schema:
+            pattern: ^()(,())*$
+            type: string
+          style: form
+        - description: Limits the response fields to only those listed for each type
+          in: query
+          name: fields
+          required: false
+          schema:
+            additionalProperties: true
+            properties:
+              representative:
+                description: Comma separated field names for representative
+                example: id,name
+                type: string
+            type: object
+          style: deepObject
+      responses:
+        200:
+          content:
+            application/vnd.api+json:
+              schema:
+                properties:
+                  data:
+                    description: An array of resource objects representing a representative
+                    items:
+                      $ref: '#/components/schemas/representative'
+                    type: array
+                    uniqueItems: true
+                  included:
+                    items:
+                      oneOf: []
+                    type: array
+                    uniqueItems: true
+                  meta:
+                    additionalProperties: true
+                    type: object
+                type: object
+          description: Success
+        default:
+          $ref: '#/components/responses/errors'
+      tags:
+        - representative
+  /representatives/{id}:
+    get:
+      callbacks: {}
+      deprecated: false
+      description: //representatives/:id operation on representative resource
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: Relationship paths to include in the response
+          explode: false
+          in: query
+          name: include
+          required: false
+          schema:
+            pattern: ^()(,())*$
+            type: string
+          style: form
+        - description: Limits the response fields to only those listed for each type
+          in: query
+          name: fields
+          required: false
+          schema:
+            additionalProperties: true
+            properties:
+              representative:
+                description: Comma separated field names for representative
+                example: id,name
+                type: string
+            type: object
+          style: deepObject
+      responses:
+        200:
+          content:
+            application/vnd.api+json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/representative'
+                  included:
+                    items:
+                      oneOf: []
+                    type: array
+                    uniqueItems: true
+                  meta:
+                    additionalProperties: true
+                    type: object
+          description: Success
+        default:
+          $ref: '#/components/responses/errors'
+      tags:
+        - representative
+  /tickets:
+    get:
+      callbacks: {}
+      deprecated: false
+      description: //tickets operation on ticket resource
+      parameters:
+        - description: Filters the query to results with attributes matching the given filter object
+          in: query
+          name: filter
+          required: false
+          schema:
+            $ref: '#/components/schemas/ticket-filter'
+          style: deepObject
+        - description: Sort order to apply to the results
+          explode: false
+          in: query
+          name: sort
+          required: false
+          schema:
+            pattern: ^(id|-id|\+\+id|--id|subject|-subject|\+\+subject|--subject|representative_id|-representative_id|\+\+representative_id|--representative_id)(,(id|-id|\+\+id|--id|subject|-subject|\+\+subject|--subject|representative_id|-representative_id|\+\+representative_id|--representative_id))*$
+            type: string
+          style: form
+        - description: Paginates the response with the limit and offset or keyset pagination.
+          in: query
+          name: page
+          required: false
+          schema:
+            anyOf:
+              - properties:
+                  after:
+                    type: string
+                  before:
+                    type: string
+                  count:
+                    default: false
+                    type: boolean
+                  limit:
+                    minimum: 1
+                    type: integer
+                type: object
+              - properties:
+                  count:
+                    default: false
+                    type: boolean
+                  limit:
+                    minimum: 1
+                    type: integer
+                  offset:
+                    minimum: 0
+                    type: integer
+                type: object
+          style: deepObject
+        - description: Relationship paths to include in the response
+          explode: false
+          in: query
+          name: include
+          required: false
+          schema:
+            pattern: ^()(,())*$
+            type: string
+          style: form
+        - description: Limits the response fields to only those listed for each type
+          in: query
+          name: fields
+          required: false
+          schema:
+            additionalProperties: true
+            properties:
+              ticket:
+                description: Comma separated field names for ticket
+                example: id,subject,representative_id
+                type: string
+            type: object
+          style: deepObject
+      responses:
+        200:
+          content:
+            application/vnd.api+json:
+              schema:
+                properties:
+                  data:
+                    description: An array of resource objects representing a ticket
+                    items:
+                      $ref: '#/components/schemas/ticket'
+                    type: array
+                    uniqueItems: true
+                  included:
+                    items:
+                      oneOf: []
+                    type: array
+                    uniqueItems: true
+                  meta:
+                    additionalProperties: true
+                    type: object
+                type: object
+          description: Success
+        default:
+          $ref: '#/components/responses/errors'
+      tags:
+        - ticket
+    post:
+      callbacks: {}
+      deprecated: false
+      description: //tickets operation on ticket resource
+      parameters:
+        - description: Relationship paths to include in the response
+          explode: false
+          in: query
+          name: include
+          required: false
+          schema:
+            pattern: ^()(,())*$
+            type: string
+          style: form
+        - description: Limits the response fields to only those listed for each type
+          in: query
+          name: fields
+          required: false
+          schema:
+            additionalProperties: true
+            properties:
+              ticket:
+                description: Comma separated field names for ticket
+                example: id,subject,representative_id
+                type: string
+            type: object
+          style: deepObject
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              additionalProperties: false
+              properties:
+                data:
+                  additionalProperties: false
+                  properties:
+                    attributes:
+                      additionalProperties: false
+                      properties:
+                        subject:
+                          type: string
+                      required:
+                        - subject
+                      type: object
+                    relationships:
+                      additionalProperties: false
+                      properties: {}
+                      type: object
+                    type:
+                      enum:
+                        - ticket
+                  type: object
+              required:
+                - data
+              type: object
+        description: Request body for the //tickets operation on ticket resource
+        required: true
+      responses:
+        201:
+          content:
+            application/vnd.api+json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ticket'
+                  included:
+                    items:
+                      oneOf: []
+                    type: array
+                    uniqueItems: true
+                  meta:
+                    additionalProperties: true
+                    type: object
+          description: Success
+        default:
+          $ref: '#/components/responses/errors'
+      tags:
+        - ticket
+  /tickets/{id}:
+    get:
+      callbacks: {}
+      deprecated: false
+      description: //tickets/:id operation on ticket resource
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: Relationship paths to include in the response
+          explode: false
+          in: query
+          name: include
+          required: false
+          schema:
+            pattern: ^()(,())*$
+            type: string
+          style: form
+        - description: Limits the response fields to only those listed for each type
+          in: query
+          name: fields
+          required: false
+          schema:
+            additionalProperties: true
+            properties:
+              ticket:
+                description: Comma separated field names for ticket
+                example: id,subject,representative_id
+                type: string
+            type: object
+          style: deepObject
+      responses:
+        200:
+          content:
+            application/vnd.api+json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ticket'
+                  included:
+                    items:
+                      oneOf: []
+                    type: array
+                    uniqueItems: true
+                  meta:
+                    additionalProperties: true
+                    type: object
+          description: Success
+        default:
+          $ref: '#/components/responses/errors'
+      tags:
+        - ticket
+    patch:
+      callbacks: {}
+      deprecated: false
+      description: //tickets/:id operation on ticket resource
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: Relationship paths to include in the response
+          explode: false
+          in: query
+          name: include
+          required: false
+          schema:
+            pattern: ^()(,())*$
+            type: string
+          style: form
+        - description: Limits the response fields to only those listed for each type
+          in: query
+          name: fields
+          required: false
+          schema:
+            additionalProperties: true
+            properties:
+              ticket:
+                description: Comma separated field names for ticket
+                example: id,subject,representative_id
+                type: string
+            type: object
+          style: deepObject
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              additionalProperties: false
+              properties:
+                data:
+                  additionalProperties: false
+                  properties:
+                    attributes:
+                      additionalProperties: false
+                      properties:
+                        representative_id:
+                          format: uuid
+                          type: string
+                      type: object
+                    id:
+                      type: string
+                    relationships:
+                      additionalProperties: false
+                      properties: {}
+                      type: object
+                    type:
+                      enum:
+                        - ticket
+                  required:
+                    - id
+                  type: object
+              required:
+                - data
+              type: object
+        description: Request body for the //tickets/:id operation on ticket resource
+        required: false
+      responses:
+        200:
+          content:
+            application/vnd.api+json:
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ticket'
+                  included:
+                    items:
+                      oneOf: []
+                    type: array
+                    uniqueItems: true
+                  meta:
+                    additionalProperties: true
+                    type: object
+          description: Success
+        default:
+          $ref: '#/components/responses/errors'
+      tags:
+        - ticket
+security:
+  - api_key: []
+servers: []
+tags:
+  - description: Operations on the ticket resource.
+    name: ticket
+  - description: Operations on the representative resource.
+    name: representative
