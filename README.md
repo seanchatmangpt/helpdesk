@@ -1,18 +1,34 @@
 # Helpdesk
 
-To start your Phoenix server:
+Helpdesk is a Phoenix/Ash example application whose observed support domain models representatives and tickets.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Observed domain
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+`Helpdesk.Support.Representative` is an Ash resource backed by `Ash.DataLayer.Ets`. A representative has a UUID identifier and required public `name`, exposes read/create actions, and has many tickets.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+`Helpdesk.Support.Ticket` is an Ash resource backed by `Ash.DataLayer.Ets`. A ticket has a UUID identifier, required public `subject`, status defaulting to `:open`, and an optional representative relationship. Its code interface exposes `read`, `read_by_id`, `open`, `close`, and `assign`; closing an already closed ticket is rejected.
 
-## Learn more
+Both resources enable `AshJsonApi.Resource`. The repository also contains Phoenix and OpenAPI surfaces; this README does not claim behavior beyond the observed source and successful execution evidence available for a given revision.
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## Development
+
+The project declares Elixir `~> 1.14` in `mix.exs`.
+
+```bash
+mix setup
+mix phx.server
+```
+
+The documented project test entry point is:
+
+```bash
+mix test
+```
+
+`mix test` runs the repository's configured Ecto create/migrate steps before the test suite, so a working test database is required by the current Mix aliases even though the two observed support resources use the ETS data layer.
+
+## Acceptance and standing
+
+For a revision to claim runtime `ALIVE`, observe execution against that exact revision rather than inferring standing from source inspection. At minimum, use the repository's relevant compile/test checks and any exercised HTTP/JSON:API path required by the change. Preserve exact failures rather than treating documentation or inspection as execution evidence.
+
+The canonical project documentation is this root `README.md`; duplicate placeholder READMEs are not authoritative.
